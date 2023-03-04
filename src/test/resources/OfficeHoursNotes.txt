@@ -1,0 +1,106 @@
+Review of Cucumber Framework:
+    - we choose this cucumber framework, because it is BDD approach
+    - business layer and technical layer to be talking the same language
+
+    Gherkin Language to define steps:
+    Given ---> setUps, preconditions
+    When ----> action steps in test case
+    And ----> more actions or more assertions
+    Then ---> Assertion steps
+
+    How cucumber combines these English words with Java Code?
+    Over CukesRunner class : one of the key file in the framework
+    path for our feature : features = "src/test/resources/features",---> this path needs to be correct %100
+    path for Java Class files : glue = "com/cydeo/step_definitions",  ---> must be correct
+
+Office Hours Tasks:
+Creating a new Cucumber Framework to test following application:
+https://demoqa.com/
+Create following Scenario and Scenario Outline
+Review parameterization in Cucumber
+
+Feature:Verifying buttons feature of the application
+  Scenario: Check different button actions
+    Given Navigate to "buttons" page
+    When  Double click on button
+    Then  Verify text :'You have done a double click' should be visible
+    And   Right-click on button
+    Then  Verify text :'You have done a right click' should be visible
+    And   Click Me button
+    Then  Verify text :'You have done a dynamic click' should be visible
+
+Feature: Links actions feature
+  Scenario Outline:Getting different responses by different links
+    Given Navigate to "links" page
+    When the user clicks to "<link>"
+    Then the message contains "<statusCode>""<statusText>"
+    Examples:
+      | link         | statusCode | statusText        |
+      | Created      | 201        | Created           |
+      | No Content   | 204        | No Content        |
+      | Moved        | 301        | Moved Permanently |
+      | Bad Request  | 400        | Bad Request       |
+      | Unauthorized | 401        | Unauthorized      |
+      | Forbidden    | 403        | Forbidden         |
+      | Not Found    | 404        | Not Found         |
+
+**** As a software engineer (QA) we need to know about Google Chrome Extensions
+        - AdBlock Extension to prevent adds on a website
+        - Google Analytics debugger extension
+
+
+ Common approach in testing:
+ Test URL : https://demoqa.com/buttons/     = baseUrl+path
+baseUrl : https://demoqa.com/
+path : buttons/
+
+Steps:
+1. define baseUrl at configuration.properties file: in this file we store static data
+2. create feature file for testing: demoQa.feature
+3. Creating first scenario steps:
+        Given Navigate to "buttons" page --- we are using parameterization
+        purpose: to create reusable steps as much as possible - avoiding hard coding
+
+4. to search in your project : CTRL+SHIFT+F or CMND+SHIFT+F
+5. get snippet for my step by running cukesrunner and dryRun = true
+6. create step_def class and paste it
+
+Hooks Class:
+    - setUp and tearDown methods for your Test Cases: common steps when initiating and ending the Test Cases
+    - Before and After should come from cucumber library not Junit/TestNG
+
+7 . I have only need to define these two steps: Parameterization
+    When  Click "Double click" button                   : Click parameter button
+    Then  Verify text :'You have done a double click' should be visible : Verify text :parameter should be visible
+
+8. POM design pattern
+       - create a Java Class for each page of your application
+       - reason: we store elements locators and some common methods that can be used in that page
+ - BasePage: is common page that we store common elements and methods of the WHOLE application
+ - ButtonPage : only for button options
+
+ How to do Double-Click in Selenium: we use Actions class and methods
+
+ How to use an WebElement from POM: create object of that class
+
+ Difference between Hooks and Background: PIQ
+ Hooks is used for common steps for the whole project and framework
+ Background is used for common steps of scenarios in the same feature file
+
+ When do we use Scenario Outline in Cucumber Framework:
+ DDT : for data driven testing: running same scenario steps against different test data
+
+
+In Cucumber Framework: parallel testing works on FEATURE files, different feature files run parallel to each other NOT Scenarios
+
+
+Oscar, why I keep getting  "element click intercepted" exception for some links? Can it be because the page is still loading?
+Reason: The page has ads, you need to scroll down (use Javascript executer)
+        Another search HW: search for how to add an extension to your test RUN
+
+        how to add an extension to your test RUN:
+        1. We need to get source code of the application
+            - add CRX chrome extension to your google chrome browser
+            - this extension helps us to download source code of an extension
+        2. We add the source code to our project folder/directory
+        3. We will modify our Driver class by adding some chrome options
